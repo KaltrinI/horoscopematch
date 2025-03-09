@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horoscope Sign Compatibility</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #4b0082;
+    }
+    select {
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px;
+    }
+    .compatibility-container {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+    }
+    .sign {
+      margin: 0 20px;
+    }
+    .compatibility {
+      font-size: 36px;
+      font-weight: bold;
+      color: #4b0082;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    .match {
+      color: green;
+    }
+    .low {
+      color: red;
+    }
+    .icon {
+      width: 100px; /* Icon size */
+      height: 100px; /* Icon size */
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Horoscope Sign Compatibility</h1>
+  <p>Select two zodiac signs to check their compatibility:</p>
+
+  <div>
+    <select id="sign1" onchange="calculateCompatibility()">
+      <option value=""> </option>
+      <option value="Aries">Aries</option>
+      <option value="Taurus">Taurus</option>
+      <option value="Gemini">Gemini</option>
+      <option value="Cancer">Cancer</option>
+      <option value="Leo">Leo</option>
+      <option value="Virgo">Virgo</option>
+      <option value="Libra">Libra</option>
+      <option value="Scorpio">Scorpio</option>
+      <option value="Sagittarius">Sagittarius</option>
+      <option value="Capricorn">Capricorn</option>
+      <option value="Aquarius">Aquarius</option>
+      <option value="Pisces">Pisces</option>
+    </select>
+
+    <select id="sign2" onchange="calculateCompatibility()">
+      <option value=""></option>
+      <option value="Aries">Aries</option>
+      <option value="Taurus">Taurus</option>
+      <option value="Gemini">Gemini</option>
+      <option value="Cancer">Cancer</option>
+      <option value="Leo">Leo</option>
+      <option value="Virgo">Virgo</option>
+      <option value="Libra">Libra</option>
+      <option value="Scorpio">Scorpio</option>
+      <option value="Sagittarius">Sagittarius</option>
+      <option value="Capricorn">Capricorn</option>
+      <option value="Aquarius">Aquarius</option>
+      <option value="Pisces">Pisces</option>
+    </select>
+  </div>
+
+  <div class="compatibility-container">
+    <div class="sign" id="sign1-display">
+      <img class="icon" src="" alt=""> <!-- Empty initial state -->
+    </div>
+    <div class="compatibility" id="compatibility">0%</div>
+    <div class="sign" id="sign2-display">
+      <img class="icon" src="" alt=""> <!-- Empty initial state -->
+    </div>
+  </div>
+
+  <h1 id="match-result"></div>
+  <script>
+    const compatibilityData = {
+      "Pisces": { "Taurus": 100, "Aries": 15, "Gemini": 10, "Cancer": 18, "Leo": 12, "Virgo": 14, "Libra": 13, "Scorpio": 16, "Sagittarius": 8, "Capricorn": 9, "Aquarius": 5, "Pisces": 10 },
+      "Taurus": { "Pisces": 100, "Aries": 10, "Gemini": 7, "Cancer": 19, "Leo": 12, "Virgo": 18, "Libra": 15, "Scorpio": 8, "Sagittarius": 6, "Capricorn": 9, "Aquarius": 13, "Taurus": 14 },
+      "Aries": { "Pisces": 15, "Taurus": 10, "Gemini": 14, "Cancer": 9, "Leo": 19, "Virgo": 5, "Libra": 8, "Scorpio": 16, "Sagittarius": 13, "Capricorn": 7, "Aquarius": 11, "Aries": 12 },
+      "Gemini": { "Pisces": 10, "Taurus": 7, "Aries": 14, "Cancer": 13, "Leo": 5, "Virgo": 11, "Libra": 15, "Scorpio": 9, "Sagittarius": 8, "Capricorn": 6, "Aquarius": 18, "Gemini": 13 },
+      "Cancer": { "Pisces": 18, "Taurus": 19, "Aries": 9, "Gemini": 13, "Leo": 7, "Virgo": 16, "Libra": 14, "Scorpio": 10, "Sagittarius": 5, "Capricorn": 11, "Aquarius": 12, "Cancer": 11 },
+      "Leo": { "Pisces": 12, "Taurus": 12, "Aries": 19, "Gemini": 5, "Cancer": 7, "Virgo": 10, "Libra": 9, "Scorpio": 15, "Sagittarius": 13, "Capricorn": 8, "Aquarius": 17, "Leo": 16 },
+      "Virgo": { "Pisces": 14, "Taurus": 18, "Aries": 5, "Gemini": 11, "Cancer": 16, "Leo": 10, "Libra": 6, "Scorpio": 12, "Sagittarius": 7, "Capricorn": 9, "Aquarius": 15, "Virgo": 9 },
+      "Libra": { "Pisces": 13, "Taurus": 15, "Aries": 8, "Gemini": 15, "Cancer": 14, "Leo": 9, "Virgo": 6, "Scorpio": 10, "Sagittarius": 12, "Capricorn": 14, "Aquarius": 17, "Libra": 12 },
+      "Scorpio": { "Pisces": 16, "Taurus": 8, "Aries": 16, "Gemini": 9, "Cancer": 10, "Leo": 15, "Virgo": 12, "Libra": 10, "Sagittarius": 7, "Capricorn": 18, "Aquarius": 5, "Scorpio": 11 },
+      "Sagittarius": { "Pisces": 8, "Taurus": 6, "Aries": 13, "Gemini": 8, "Cancer": 5, "Leo": 13, "Virgo": 7, "Libra": 12, "Scorpio": 7, "Capricorn": 6, "Aquarius": 15, "Sagittarius": 10 },
+      "Capricorn": { "Pisces": 9, "Taurus": 9, "Aries": 7, "Gemini": 6, "Cancer": 11, "Leo": 8, "Virgo": 9, "Libra": 14, "Scorpio": 18, "Sagittarius": 6, "Aquarius": 10, "Capricorn": 15 },
+      "Aquarius": { "Pisces": 5, "Taurus": 13, "Aries": 11, "Gemini": 18, "Cancer": 12, "Leo": 17, "Virgo": 15, "Libra": 17, "Scorpio": 5, "Sagittarius": 15, "Capricorn": 10, "Aquarius": 14 }
+    };
+
+    function calculateCompatibility() {
+      const sign1 = document.getElementById('sign1').value;
+      const sign2 = document.getElementById('sign2').value;
+
+      if (!sign1 || !sign2) {
+        // Reset the compatibility if either sign is not selected
+        document.getElementById('compatibility').textContent = '0%';
+        document.getElementById('sign1-display').innerHTML = `<img class="icon" src="" alt="">`;
+        document.getElementById('sign2-display').innerHTML = `<img class="icon" src="" alt="">`;
+        return;
+      }
+
+      // Get the compatibility value
+      const compatibility = compatibilityData[sign1][sign2];
+
+      // Update the displayed icons
+      document.getElementById('sign1-display').innerHTML = `<img class="icon" src="${getIconUrl(sign1)}" alt="${sign1}">`;
+      document.getElementById('sign2-display').innerHTML = `<img class="icon" src="${getIconUrl(sign2)}" alt="${sign2}">`;
+
+      const compatibilityText = document.getElementById('compatibility');
+      const resultText = document.getElementById('match-result');
+
+      let percentage = 0;
+      let interval = setInterval(() => {
+        if (percentage < compatibility) {
+          percentage++;
+          compatibilityText.textContent = `${percentage}%`;
+        } else {
+          clearInterval(interval);
+          let matchDescription = '';
+          if (percentage > 75) {
+            matchDescription = `❤️❤️❤️ You and your partner are a great match! Your bond is strong. ❤️❤️❤️`;
+          } else if (percentage > 50) {
+            matchDescription = `There's potential, but there's room for improvement.`;
+          } else {
+            matchDescription = `You might face challenges. Consider your differences.`;
+          }
+          resultText.textContent = matchDescription;
+        }
+      }, 10);
+    }
+
+    function getIconUrl(sign) {
+      switch (sign) {
+        case 'Pisces': return 'https://cdn1.iconfinder.com/data/icons/zodiac-outline/32/Pisces_astro_astrology_signs_zodiac-512.png';
+        case 'Taurus': return 'https://cdn0.iconfinder.com/data/icons/zodiac-5/24/zodiac-02-512.png';
+        case 'Aries': return 'https://cdn1.iconfinder.com/data/icons/unigrid-astrology/60/007_001_astrology_zodiac_aries_ram-512.png';
+        case 'Gemini': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-03-512.png';
+        case 'Cancer': return 'https://cdn1.iconfinder.com/data/icons/zodiacs-5/24/Cancer_astrology_horoscope_zodiac_2-512.png';
+        case 'Leo': return 'https://cdn3.iconfinder.com/data/icons/zodiac-signs/60/Leo-01-512.png';
+        case 'Virgo': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-06-512.png';
+        case 'Libra': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-08-512.png';
+        case 'Scorpio': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-07-512.png';
+        case 'Sagittarius': return 'https://cdn1.iconfinder.com/data/icons/unigrid-astrology/60/007_009_astrology_zodiac_sagittarius_archer-512.png';
+        case 'Capricorn': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-10-512.png';
+        case 'Aquarius': return 'https://cdn3.iconfinder.com/data/icons/aami-web-internet/64/aami9-19-512.png';
+      }
+    }
+  </script>
+
+</body>
+</html>
